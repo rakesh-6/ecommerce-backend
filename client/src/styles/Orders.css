@@ -1,0 +1,146 @@
+.orders-page {
+  padding: 2rem 0;
+  min-height: 80vh;
+}
+
+.orders-page h1 {
+  margin-bottom: 2rem;
+}
+
+.empty-orders {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-orders p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.shop-btn {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 0.8rem 2rem;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.orders-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+
+.order-card:hover {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+.order-header h3 {
+  margin: 0;
+}
+
+.order-date {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0.3rem 0 0;
+}
+
+.order-status {
+  text-align: right;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.processing {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.status.shipped {
+  background: #cff4fc;
+  color: #055160;
+}
+
+.status.delivered {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.status.cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.order-items {
+  padding: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.order-items h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f9f9f9;
+}
+
+.total {
+  font-size: 1.1rem;
+}
+
+.view-btn {
+  background: #667eea;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.view-btn:hover {
+  background: #5568d3;
+}
