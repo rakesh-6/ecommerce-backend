@@ -24,6 +24,31 @@ const orderSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    paidAt: {
+      type: Date,
+    },
+    paymentMethod: {
+      type: String,
+      default: "Razorpay",
+    },
+    transactionId: {
+      type: String,
+    },
+    shippingAddress: {
+      address: String,
+      city: String,
+      postalCode: String,
+      phone: String,
+    },
   },
   {
     timestamps: true,

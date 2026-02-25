@@ -5,7 +5,9 @@ const { protect, admin } = require("../middleware/authMiddleware");
 const {
   addOrderItems,
   getMyOrders,
+  getOrderById,
   getOrders,
+  updateOrderStatus,
 } = require("../controllers/orderController");
 
 router.route("/")

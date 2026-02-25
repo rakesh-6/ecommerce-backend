@@ -9,14 +9,13 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../controllers/productController");
-console.log("protect:", protect);
-console.log("admin:", admin);
-console.log("createProduct:", createProduct);
 
+// Get all products and Create new product
 router.route("/")
-  .post(protect, admin, createProduct)
-  .get(getProducts);
+  .get(getProducts)
+  .post(protect, admin, createProduct);
 
+// Get, update, delete specific product
 router.route("/:id")
   .get(getProductById)
   .put(protect, admin, updateProduct)

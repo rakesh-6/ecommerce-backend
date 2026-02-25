@@ -8,6 +8,7 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 connectDB();
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running...");
