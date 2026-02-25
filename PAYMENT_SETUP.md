@@ -58,8 +58,8 @@ Replace placeholders with your actual Razorpay credentials:
 
 ```env
 MONGO_URI=mongodb://localhost:27017/ecommerce
-JWT_SECRET=RakeshEcommerce@2026!SecureKey#9843
-CLIENT_URL=http://localhost:5173
+JWT_SECRET=change_me_to_a_long_random_secret
+CLIENT_URL=http://localhost:5173,http://localhost:5174
 PORT=5000
 RAZORPAY_KEY_ID=rzp_test_YOUR_KEY_ID_HERE
 RAZORPAY_KEY_SECRET=YOUR_KEY_SECRET_HERE

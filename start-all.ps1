@@ -18,10 +18,41 @@ catch {
     exit 1
 }
 
+function Ensure-EnvFile {
+    param(
+        [Parameter(Mandatory=$true)][string]$EnvPath,
+        [Parameter(Mandatory=$true)][string]$ExamplePath
+    )
+    if (-not (Test-Path $EnvPath)) {
+        if (Test-Path $ExamplePath) {
+            Copy-Item $ExamplePath $EnvPath -Force
+            Write-Host "✅ Created missing env file: $EnvPath" -ForegroundColor Green
+            Write-Host "   Please review and update values before going live." -ForegroundColor Yellow
+        } else {
+            Write-Host "⚠️ Missing $EnvPath and no example found at $ExamplePath" -ForegroundColor Yellow
+        }
+    }
+}
+
+Ensure-EnvFile -EnvPath "$projectRoot\server\.env" -ExamplePath "$projectRoot\server\.env.example"
+Ensure-EnvFile -EnvPath "$projectRoot\client\.env" -ExamplePath "$projectRoot\client\.env.example"
+
+# Start MongoDB via Docker (optional, recommended for local dev)
+if (Test-Path "$projectRoot\docker-compose.yml") {
+    try {
+        $null = docker compose version
+        Write-Host "Starting MongoDB (Docker)..." -ForegroundColor Yellow
+        docker compose up -d | Out-Null
+        Write-Host "✅ MongoDB container started (or already running)" -ForegroundColor Green
+    } catch {
+        Write-Host "⚠️ Docker not available. Ensure MongoDB is running locally (or install Docker Desktop)." -ForegroundColor Yellow
+    }
+}
+
 Write-Host "Starting Backend Server..." -ForegroundColor Yellow
 Write-Host "Navigate to: $projectRoot\server" -ForegroundColor Gray
 
-$backendProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/k cd server && npm install > nul 2>&1 && echo Starting MongoDB connection... && node server.js" -PassThru
+$backendProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/k cd /d server && if not exist node_modules (npm install) && echo Starting backend... && npm run dev" -PassThru
 Write-Host "✅ Backend started (PID: $($backendProcess.Id))" -ForegroundColor Green
 
 Start-Sleep -Seconds 3
@@ -30,7 +61,7 @@ Write-Host ""
 Write-Host "Starting Frontend Server..." -ForegroundColor Yellow
 Write-Host "Navigate to: $projectRoot\client" -ForegroundColor Gray
 
-$clientProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/k cd client && npm install > nul 2>&1 && echo Starting Vite dev server... && npm run dev" -PassThru
+$clientProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/k cd /d client && if not exist node_modules (npm install) && echo Starting Vite dev server... && npm run dev" -PassThru
 Write-Host "✅ Frontend started (PID: $($clientProcess.Id))" -ForegroundColor Green
 
 Write-Host ""

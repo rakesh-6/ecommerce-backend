@@ -9,11 +9,31 @@ echo ""
 # Navigate to project
 cd "$(dirname "$0")"
 
+# Ensure env files exist (copy examples on first run)
+if [ ! -f "server/.env" ] && [ -f "server/.env.example" ]; then
+  cp "server/.env.example" "server/.env"
+  echo "✅ Created missing env file: server/.env (review values before going live)"
+fi
+
+if [ ! -f "client/.env" ] && [ -f "client/.env.example" ]; then
+  cp "client/.env.example" "client/.env"
+  echo "✅ Created missing env file: client/.env (review values before going live)"
+fi
+
+# Start MongoDB via Docker (optional, recommended for local dev)
+if [ -f "docker-compose.yml" ] && command -v docker >/dev/null 2>&1; then
+  if docker compose version >/dev/null 2>&1; then
+    echo "Starting MongoDB (Docker)..."
+    docker compose up -d >/dev/null 2>&1 || true
+    echo "✅ MongoDB container started (or already running)"
+  fi
+fi
+
 # Start backend in background
 echo "Starting Backend Server..."
 cd server
-npm install > /dev/null 2>&1
-node server.js &
+if [ ! -d "node_modules" ]; then npm install; fi
+npm run dev &
 BACKEND_PID=$!
 echo "✅ Backend started (PID: $BACKEND_PID)"
 echo ""
@@ -24,7 +44,7 @@ sleep 3
 # Start frontend in new terminal
 echo "Starting Frontend Server..."
 cd ../client
-npm install > /dev/null 2>&1
+if [ ! -d "node_modules" ]; then npm install; fi
 npm run dev &
 FRONTEND_PID=$!
 echo "✅ Frontend started (PID: $FRONTEND_PID)"
