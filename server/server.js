@@ -17,7 +17,24 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-app.use(cors());
+const configuredOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const devOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = configuredOrigins.length ? configuredOrigins : devOrigins;
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Allow non-browser clients (curl/Postman) with no Origin header
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error(`CORS blocked for origin: ${origin}`));
+    },
+  })
+);
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);

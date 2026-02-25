@@ -92,6 +92,17 @@ ecommerce/
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- **Node.js** installed
+- **MongoDB** running locally (recommended: Docker)
+
+### Start MongoDB (Recommended)
+```bash
+docker compose up -d
+```
+
+If you don't have Docker, install MongoDB locally and ensure it’s running on `mongodb://localhost:27017`.
+
 ### Option 1: PowerShell (Windows)
 ```powershell
 # Run everything with one command
@@ -104,7 +115,7 @@ ecommerce/
 ```bash
 cd server
 npm install
-node server.js
+npm run dev
 ```
 
 **Terminal 2 - Frontend:**
@@ -181,17 +192,29 @@ See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete step-by-step instruc
 
 ## 🔐 Environment Variables
 
-### Backend `.env`
+### Backend `server/.env`
+Create it by copying the template:
+```bash
+copy server\.env.example server\.env   # Windows
+# cp server/.env.example server/.env   # Mac/Linux
+```
+
 ```env
 MONGO_URI=mongodb://localhost:27017/ecommerce
-JWT_SECRET=your_secret_key
-CLIENT_URL=http://localhost:5173
+JWT_SECRET=change_me_to_a_long_random_secret
+CLIENT_URL=http://localhost:5173,http://localhost:5174
 PORT=5000
 RAZORPAY_KEY_ID=your_key_id
 RAZORPAY_KEY_SECRET=your_secret
 ```
 
-### Frontend `.env`
+### Frontend `client/.env`
+Create it by copying the template:
+```bash
+copy client\.env.example client\.env   # Windows
+# cp client/.env.example client/.env   # Mac/Linux
+```
+
 ```env
 VITE_API_URL=http://localhost:5000
 VITE_RAZORPAY_KEY_ID=your_key_id

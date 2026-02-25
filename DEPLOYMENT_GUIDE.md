@@ -7,7 +7,7 @@
 ```bash
 cd server
 npm install
-node server.js
+npm run dev
 ```
 
 **Backend should show:**
@@ -115,7 +115,7 @@ Orders: 2
 Create a `.env.render` file with PRODUCTION values:
 ```env
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/ecommerce
-JWT_SECRET=RakeshEcommerce@2026!SecureKey#9843
+JWT_SECRET=your_long_random_production_secret
 RAZORPAY_KEY_ID=rzp_live_YOUR_LIVE_KEY
 RAZORPAY_KEY_SECRET=YOUR_LIVE_SECRET
 CLIENT_URL=https://your-frontend-render-url.onrender.com
@@ -134,7 +134,7 @@ PORT=5000
    - **Environment:** Node
    - **Region:** Pick closest to you
    - **Build Command:** `cd server && npm install`
-   - **Start Command:** `cd server && node server.js`
+   - **Start Command:** `cd server && npm start`
 
 3. **Add Environment Variables:**
    - Click "Advanced" or "Environment" tab
@@ -185,19 +185,7 @@ Once backend is deployed and running:
 
 ### Step 5: Configure CORS (Backend)
 
-Update `server/server.js` to allow production domain:
-
-```javascript
-const cors = require('cors');
-
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://your-frontend-render-url.onrender.com'
-  ]
-}));
-```
+Set `CLIENT_URL` on Render to your frontend URL (or a comma-separated list of allowed origins). No code changes required.
 
 ---
 
