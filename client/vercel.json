@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://ecommerce-backend.onrender.com",
+    "VITE_RAZORPAY_KEY_ID": "@razorpay_key_id"
+  }
+}
