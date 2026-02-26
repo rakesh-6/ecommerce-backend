@@ -1,0 +1,35 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Build Frontend
+      run: |
+        cd client
+        npm install
+        npm run build
+    
+    - name: Deploy Backend to Render
+      run: |
+        echo "Backend will auto-deploy when you push changes to GitHub"
+        echo "Configure Render dashboard to auto-deploy from your repo"
+    
+    - name: Success Message
+      run: |
+        echo "✅ Build complete!"
+        echo "📱 Frontend built and ready for deployment"
+        echo "🚀 Backend will auto-deploy from Render"

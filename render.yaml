@@ -1,0 +1,30 @@
+version: 4
+services:
+  - type: web
+    name: ecommerce-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install --prefix server
+    startCommand: npm start --prefix server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+env:
+  - key: MONGO_URI
+    scope: service
+    value: mongodb+srv://username:password@cluster.mongodb.net/ecommerce
+  - key: JWT_SECRET
+    scope: service
+    value: YourSecureKey2026!
+  - key: CLIENT_URL
+    scope: service
+    value: https://ecommerce-client.vercel.app
+  - key: RAZORPAY_KEY_ID
+    scope: service
+    value: your_key_id
+  - key: RAZORPAY_KEY_SECRET
+    scope: service
+    value: your_key_secret
