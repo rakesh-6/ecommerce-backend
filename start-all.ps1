@@ -1,6 +1,8 @@
 # E-Commerce Full Stack Startup (Windows PowerShell)
 # Usage: .\start-all.ps1
 
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
 Write-Host "================================" -ForegroundColor Cyan
 Write-Host "E-Commerce Full Stack" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
@@ -37,6 +39,17 @@ function Ensure-EnvFile {
 Ensure-EnvFile -EnvPath "$projectRoot\server\.env" -ExamplePath "$projectRoot\server\.env.example"
 Ensure-EnvFile -EnvPath "$projectRoot\client\.env" -ExamplePath "$projectRoot\client\.env.example"
 
+function Get-EnvValueFromFile {
+    param(
+        [Parameter(Mandatory=$true)][string]$EnvPath,
+        [Parameter(Mandatory=$true)][string]$Key
+    )
+    if (-not (Test-Path $EnvPath)) { return $null }
+    $line = (Get-Content $EnvPath | Where-Object { $_ -match "^\s*$Key\s*=" } | Select-Object -First 1)
+    if (-not $line) { return $null }
+    return ($line -split "=", 2)[1].Trim()
+}
+
 # Start MongoDB via Docker (optional, recommended for local dev)
 if (Test-Path "$projectRoot\docker-compose.yml") {
     try {
@@ -46,6 +59,30 @@ if (Test-Path "$projectRoot\docker-compose.yml") {
         Write-Host "✅ MongoDB container started (or already running)" -ForegroundColor Green
     } catch {
         Write-Host "⚠️ Docker not available. Ensure MongoDB is running locally (or install Docker Desktop)." -ForegroundColor Yellow
+    }
+}
+
+$mongoUri = Get-EnvValueFromFile -EnvPath "$projectRoot\server\.env" -Key "MONGO_URI"
+if ($mongoUri -and ($mongoUri -like "mongodb://localhost:*" -or $mongoUri -like "mongodb://127.0.0.1:*")) {
+    $mongoPort = 27017
+    try {
+        $match = [regex]::Match($mongoUri, "mongodb:\/\/(localhost|127\.0\.0\.1):(?<port>\d+)")
+        if ($match.Success) { $mongoPort = [int]$match.Groups["port"].Value }
+    } catch { }
+
+    $mongoOk = $false
+    try {
+        $mongoOk = (Test-NetConnection -ComputerName "localhost" -Port $mongoPort -WarningAction SilentlyContinue).TcpTestSucceeded
+    } catch { }
+
+    if (-not $mongoOk) {
+        Write-Host "" 
+        Write-Host "❌ MongoDB is NOT reachable on localhost:$mongoPort" -ForegroundColor Red
+        Write-Host "Fix options:" -ForegroundColor Yellow
+        Write-Host "  1) Install Docker Desktop and re-run: docker compose up -d" -ForegroundColor Gray
+        Write-Host "  2) Install MongoDB Community Server and start the MongoDB service" -ForegroundColor Gray
+        Write-Host "  3) Use MongoDB Atlas and set MONGO_URI in server\.env to your cluster URI" -ForegroundColor Gray
+        Write-Host ""
     }
 }
 

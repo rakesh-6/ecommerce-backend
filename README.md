@@ -101,7 +101,9 @@ ecommerce/
 docker compose up -d
 ```
 
-If you don't have Docker, install MongoDB locally and ensure it’s running on `mongodb://localhost:27017`.
+If you don't have Docker:
+- Use **MongoDB Community Server** locally and ensure it’s running on `mongodb://localhost:27017`, or
+- Use **MongoDB Atlas** and set `MONGO_URI` in `server/.env` to your `mongodb+srv://...` connection string.
 
 ### Option 1: PowerShell (Windows)
 ```powershell
