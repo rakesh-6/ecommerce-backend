@@ -56,7 +56,8 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(buildPath));
 
   // SPA fallback — any non-API route serves index.html
-  app.get("(.*)", (req, res) => {
+  // Express 5 requires named parameters for wildcards (e.g., :path*)
+  app.get("/:path*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 } else {
