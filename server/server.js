@@ -11,7 +11,12 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
-connectDB();
+// On Render, environment variables should come from the dashboard, not a file.
+const mongoUri = (process.env.RENDER || process.env.NODE_ENV === "production")
+  ? process.env.MONGO_URI
+  : (process.env.MONGO_URI || "");
+
+connectDB(mongoUri);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
