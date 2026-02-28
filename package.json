@@ -1,27 +1,17 @@
 {
-  "name": "server",
+  "name": "ecommerce-fullstack",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Full-stack e-commerce application",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install:server": "cd server && npm install",
+    "install:client": "cd client && npm install",
+    "build:client": "cd client && npm run build",
+    "build": "npm run install:server && npm run install:client && npm run build:client",
+    "start": "cd server && node server.js",
+    "dev": "cd server && npm run dev",
+    "seed": "cd server && node seedData.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1",
-    "express-async-handler": "^1.2.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongodb": "^7.1.0",
-    "mongoose": "^9.2.1",
-    "razorpay": "^2.9.6"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.13"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
