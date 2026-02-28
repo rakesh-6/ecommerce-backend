@@ -55,9 +55,9 @@ if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "../client/dist");
   app.use(express.static(buildPath));
 
-  // SPA fallback — any non-API route serves index.html
-  // Express 5 requires named parameters for wildcards (e.g., :path*)
-  app.get("/:path*", (req, res) => {
+  // SPA fallback — Use a regex to catch anything that isn't an API route
+  // This is the most stable way to do a catch-all in Express 5.x
+  app.get(/^((?!\/api).)*$/, (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 } else {
