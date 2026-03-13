@@ -51,12 +51,7 @@ export const orderAPI = {
     api.put(`/orders/${id}`, { status }),
 };
 
-// Payment APIs
-export const paymentAPI = {
-  createOrder: (amount, orderId) =>
-    api.post('/payment/create-order', { amount, orderId }),
-  verifyPayment: (paymentData) =>
-    api.post('/payment/verify', paymentData),
+// ... (other APIs)
 };
 
 export default api;

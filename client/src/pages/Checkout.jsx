@@ -33,17 +33,6 @@ export const Checkout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Load Razorpay script
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -72,60 +61,13 @@ export const Checkout = () => {
       // Step 1: Create order in database
       const orderResponse = await orderAPI.create(orderData);
       const createdOrder = orderResponse.data;
-      
-      // Step 2: Create payment order with Razorpay
-      const paymentOrderResponse = await paymentAPI.createOrder(
-        getTotalPrice(),
-        createdOrder._id
-      );
-      const razorpayOrder = paymentOrderResponse.data;
 
-      // Step 3: Load Razorpay script and open payment modal
-      const isScriptLoaded = await loadRazorpayScript();
-      if (!isScriptLoaded) {
-        throw new Error('Failed to load Razorpay script');
-      }
+      // Payment successful (Bypassing for now as requested)
+      clearCart();
+      navigate(`/order/${createdOrder._id}`, {
+        state: { paymentSuccess: true }
+      });
 
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'YOUR_KEY_ID',
-        amount: razorpayOrder.amount,
-        currency: razorpayOrder.currency,
-        order_id: razorpayOrder.id,
-        name: 'E-Commerce Store',
-        description: 'Order Payment',
-        customer_notification: 1,
-        handler: async (response) => {
-          try {
-            // Step 4: Verify payment
-            const verificationResponse = await paymentAPI.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderId: createdOrder._id,
-            });
-
-            // Payment successful
-            clearCart();
-            navigate(`/order/${createdOrder._id}`, {
-              state: { paymentSuccess: true }
-            });
-          } catch (err) {
-            setError('Payment verification failed: ' + (err.response?.data?.message || err.message));
-            setLoading(false);
-          }
-        },
-        prefill: {
-          name: user?.name,
-          email: user?.email,
-          contact: formData.phone,
-        },
-        theme: {
-          color: '#6366f1',
-        },
-      };
-
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
       setLoading(false);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Failed to process order');
@@ -141,7 +83,7 @@ export const Checkout = () => {
         <div className="checkout-layout">
           <div className="checkout-form">
             <h1>Checkout</h1>
-            
+
             {error && <div className="error-message">{error}</div>}
 
             <div className="order-summary">
@@ -159,7 +101,7 @@ export const Checkout = () => {
 
             <form onSubmit={handleSubmit}>
               <h3>Shipping Information</h3>
-              
+
               <div className="form-group">
                 <label>Full Name</label>
                 <input type="text" value={user?.name} readOnly />
