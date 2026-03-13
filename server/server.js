@@ -9,7 +9,6 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
 
 // MongoDB URI Resolution
 const mongoUri = process.env.MONGO_URI;
