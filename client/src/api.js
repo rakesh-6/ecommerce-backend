@@ -52,6 +52,5 @@ export const orderAPI = {
 };
 
 // ... (other APIs)
-};
 
 export default api;
