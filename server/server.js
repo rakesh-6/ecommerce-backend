@@ -11,11 +11,10 @@ const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
-// On Render, environment variables should come from the dashboard, not a file.
-const mongoUri = (process.env.RENDER || process.env.NODE_ENV === "production")
-  ? process.env.MONGO_URI
-  : (process.env.MONGO_URI || "");
+// MongoDB URI Resolution
+const mongoUri = process.env.MONGO_URI;
 
+// Initial Connection
 connectDB(mongoUri);
 
 const app = express();
@@ -75,12 +74,16 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log("\n================================");
   console.log("🚀 E-Commerce Server Started");
   console.log("================================");
-  console.log(`📍 Server: http://localhost:${PORT}`);
-  console.log(`🌐 Client URL: ${process.env.CLIENT_URL || devOrigins.join(", ")}`);
-  console.log(`🗄️ Mode: ${process.env.NODE_ENV || "development"}`);
+  console.log(`📍 Port: ${PORT}`);
+  console.log(`🗄️  Mode: ${process.env.NODE_ENV || "development"}`);
+  console.log(`🔗 CORS Allowed: ${allowedOrigins.join(", ")}`);
+
+  if (process.env.NODE_ENV === "production") {
+    console.log("📦 Serving Static Frontend: ON");
+  }
   console.log("================================\n");
 });
