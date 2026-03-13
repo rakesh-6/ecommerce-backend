@@ -52,16 +52,22 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Production: Serve built frontend from client/dist
+// Production: Serve built frontend from client/dist (if it exists)
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "../client/dist");
-  app.use(express.static(buildPath));
+  const fs = require("fs");
 
-  // SPA fallback — Use a regex to catch anything that isn't an API route
-  // This is the most stable way to do a catch-all in Express 5.x
-  app.get(/^((?!\/api).)*$/, (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
-  });
+  if (fs.existsSync(buildPath)) {
+    app.use(express.static(buildPath));
+    app.get(/^((?!\/api).)*$/, (req, res) => {
+      res.sendFile(path.join(buildPath, "index.html"));
+    });
+  } else {
+    // If build folder is missing, just show API status
+    app.get("/", (req, res) => {
+      res.send("🚀 Backend API is running... (Frontend is hosted on Vercel)");
+    });
+  }
 } else {
   app.get("/", (req, res) => {
     res.send("API Running...");
