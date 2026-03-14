@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -7,6 +8,16 @@ export const Header = () => {
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (keyword.trim()) {
+      navigate(`/?keyword=${keyword}`);
+    } else {
+      navigate('/');
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -20,6 +31,20 @@ export const Header = () => {
           <Link to="/" className="logo">
             🛒 Ecommerce
           </Link>
+
+          <form className="search-form" onSubmit={handleSearch}>
+            <input
+              type="text"
+              name="q"
+              placeholder="Search products..."
+              className="search-input"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <button type="submit" className="search-btn">
+              🔍
+            </button>
+          </form>
 
           <nav className="nav">
             <Link to="/">Home</Link>

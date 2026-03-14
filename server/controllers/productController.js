@@ -11,8 +11,30 @@ const createProduct = asyncHandler(async (req, res) => {
 
 // ================= GET ALL PRODUCTS =================
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
+  const pageSize = 12;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const keyword = req.query.keyword
+    ? {
+      name: {
+        $regex: req.query.keyword,
+        $options: "i",
+      },
+    }
+    : {};
+
+  const category = req.query.category ? { category: req.query.category } : {};
+
+  const minPrice = Number(req.query.minPrice) || 0;
+  const maxPrice = Number(req.query.maxPrice) || Infinity;
+  const priceFilter = { price: { $gte: minPrice, $lte: maxPrice === Infinity ? 1000000 : maxPrice } };
+
+  const count = await Product.countDocuments({ ...keyword, ...category, ...priceFilter });
+  const products = await Product.find({ ...keyword, ...category, ...priceFilter })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // ================= GET PRODUCT BY ID =================

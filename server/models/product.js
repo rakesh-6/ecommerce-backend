@@ -24,6 +24,11 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    category: {
+      type: String,
+      required: true,
+      default: "Other",
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

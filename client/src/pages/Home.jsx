@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { productAPI } from '../api';
 import { ProductCard } from '../components/ProductCard';
 import '../styles/Home.css';
@@ -8,12 +9,27 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const keyword = queryParams.get('keyword') || '';
+
+  const [category, setCategory] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await productAPI.getAll();
-        setProducts(response.data);
+        const params = {
+          keyword,
+          category: category || undefined,
+          minPrice: minPrice || undefined,
+          maxPrice: maxPrice || undefined
+        };
+        const response = await productAPI.getAll(params);
+        // The backend now returns { products, page, pages }
+        setProducts(response.data.products || response.data);
         setError(null);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to load products');
@@ -24,7 +40,7 @@ export const Home = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [keyword, category, minPrice, maxPrice]);
 
   if (loading) return <div className="container"><p className="loading">Loading products...</p></div>;
   if (error) return <div className="container"><p className="error">{error}</p></div>;
@@ -38,8 +54,52 @@ export const Home = () => {
         </div>
 
         <div className="products-section">
-          <h2>Featured Products</h2>
-          
+          <div className="filters-bar">
+            <div className="filter-group">
+              <label>Category:</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                <option value="">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Home">Home</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Min Price:</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+              />
+            </div>
+            <div className="filter-group">
+              <label>Max Price:</label>
+              <input
+                type="number"
+                placeholder="100000"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+              />
+            </div>
+            {(keyword || category || minPrice || maxPrice) && (
+              <button
+                className="clear-filters"
+                onClick={() => {
+                  setCategory('');
+                  setMinPrice('');
+                  setMaxPrice('');
+                  // Note: keyword is from URL, clearing it requires navigating
+                }}
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
+
+          <h2>{keyword ? `Search Results for "${keyword}"` : 'Featured Products'}</h2>
+
           {products.length === 0 ? (
             <p className="no-products">No products available</p>
           ) : (
